@@ -12,7 +12,7 @@ spring:
       #mysql驱动
       driver-class-name: com.mysql.cj.jdbc.Driver
       #基本属性
-      url: jdbc:mysql://127.0.0.1:3306/pxy?characterEncoding=utf8&useUnicode=true&useSSL=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://127.0.0.1:3306/pxy?characterEncoding=utf8&allowMultiQueries=true&useUnicode=true&useSSL=false&serverTimezone=GMT%2B8
       username: root
       password: 123456
       #配置初始化大小/最小/最大
@@ -25,7 +25,7 @@ spring:
       time-between-eviction-runs-millis: 60000
 
   thymeleaf:
-    prefix: classpath:/templates/
+    prefix: classpath:/templates/page/
     check-template-location: true
     suffix: .html
     encoding: UTF-8
@@ -46,33 +46,37 @@ spring:
     restart:
       enabled: true #是否支持热部署
 
-  #redis缓存
-  redis:
-    #redis数据库索引，默认是0
-    database: 0
-    #redis服务器地址，这里用本地的redis
-    host: 127.0.0.1
-    # Redis服务器连接密码（默认为空）
-    password: 123456
-    #redis服务器连接端口，默认是6379
-    port: 6379
-    # 连接超时时间（毫秒）
-    timeout: 1000
-    jedis:
-      pool:
-        # 连接池最大连接数（使用负值表示没有限制）
-        max-active: 8
-        # 连接池最大阻塞等待时间（使用负值表示没有限制
-        max-wait: -1
-        # 连接池中的最大空闲连接
-        max-idle: 8
-        # 连接池中的最小空闲连接
-        min-idle: 0
+ #redis缓存 ，注意redis的缩进，有缩进代表是二级prefix!
+redis:
+  #redis数据库索引，默认是0
+  database: 0
+  #redis服务器地址，这里用本地的redis
+  host: 127.0.0.1
+  # Redis服务器连接密码（默认为空）
+  password: 123456
+  #redis服务器连接端口，默认是6379
+  port: 6379
+  # 连接超时时间（秒）
+  timeout: 3
+  #jedis高版本的配置方式
+  poolMaxTotal: 10
+  poolMaxIdle: 10
+  poolMaxWait: 3
+#    jedis:
+#      pool:
+#        # 连接池最大连接数（使用负值表示没有限制）
+#        max-active: 8
+#        # 连接池最大阻塞等待时间（使用负值表示没有限制
+#        max-wait: -1
+#        # 连接池中的最大空闲连接
+#        max-idle: 8
+#        # 连接池中的最小空闲连接
+#        min-idle: 0
 
 #mybatis配置
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.pxy.simpleSeckill.entity
+  type-aliases-package: com.pxy.seckill.entity
   configuration:
     # 使用jdbc的getGeneratedKeys 可以获取数据库自增主键值
     use-generated-keys: true
@@ -84,4 +88,4 @@ mybatis:
 # 打印sql
 logging:
   level:
-    com.pxy.simpleSeckill.mapper: DEBUG
+    com.pxy.seckill.mapper: DEBUG
