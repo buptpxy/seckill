@@ -8,7 +8,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 这里为啥要注解为Service?
+ * 这里为啥要注解为Service?方便被依赖注入
  */
 @Service
 public class RedisPoolFactory {

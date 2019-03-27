@@ -83,16 +83,16 @@ function countDown(){
 			countDown();
 		},1000);
 	}else if(remainSeconds == 0){//秒杀进行中
-	    if(remainStock==0 ){
-	        $("#buyButton").attr("disabled", true);
-		    $("#seckillTip").html("商品已经卖完");
-	    }else{
+	    <!--if(remainStock==0 ){当状态为秒杀进行中时，remainStock肯定为0，所以不能以此为判断依据-->
+	        <!--$("#buyButton").attr("disabled", true);-->
+		    <!--$("#seckillTip").html("商品已经卖完");-->
+	    <!--}else{-->
 	        $("#buyButton").attr("disabled", false);
             if(timeout){
                 clearTimeout(timeout);
             }
 		    $("#seckillTip").html("秒杀进行中");
-	    }
+	    <!--}-->
 	}else{//秒杀已经结束
 		$("#buyButton").attr("disabled", true);
 		$("#seckillTip").html("秒杀已经结束");

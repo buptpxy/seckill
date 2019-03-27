@@ -42,6 +42,7 @@ public class CodeMsg {
     //goods module 5003xx
 
     //orders module 5004xx
+    public static CodeMsg ORDER_NOT_EXIST = new CodeMsg(500400, "订单不存在");
 
     //seckill module 5005xx
     public static CodeMsg SEC_KILL_OVER = new CodeMsg(500500, "商品已经秒杀完毕");

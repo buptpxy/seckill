@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.SelectKey;
 @Mapper
 public interface OrderDao {
     /**
-     * 查询订单
+     * 根据userId 和goodsId查询订单
      * @param userId
      * @param goodsId
      * @return
@@ -39,4 +39,12 @@ public interface OrderDao {
      */
     @Insert("insert into seckill_orders(user_id,goods_id,order_id)values(#{userId},#{goodsId},#{orderId})")
     public int insertSeckillOrder(SeckillOrders seckillOrders);
+
+    /**
+     * 根据orderId查询订单详情orderInfo
+     * @param orderId
+     * @return
+     */
+    @Select("select * from order_info where id=#{orderId}")
+    public OrderInfo getOrderInfoById(long orderId);
 }

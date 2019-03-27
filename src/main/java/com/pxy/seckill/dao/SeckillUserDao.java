@@ -1,10 +1,7 @@
 package com.pxy.seckill.dao;
 
 import com.pxy.seckill.entity.SeckillUser;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,4 +20,7 @@ public interface SeckillUserDao {
             "</script>"
     })
     public int insertUserBatch(List<SeckillUser> list);
+
+    @Update("update seckill_user set password = #{password} where id=#{id}")
+    public void update(SeckillUser user);
 }

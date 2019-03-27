@@ -35,11 +35,21 @@ public class SeckillUserServiceImpl implements SeckillUserService {
 
     @Override
     public SeckillUser getById(long id){
-        return seckillUserDao.getById(id);
+        //取缓存
+        SeckillUser user = redisService.get(SeckillUserKey.getById,""+id,SeckillUser.class);
+        if (user!=null){
+            return user;
+        }
+        //取数据库
+        user = seckillUserDao.getById(id);
+        if (user!=null){
+            redisService.set(SeckillUserKey.getById,""+id,user);
+        }
+        return user;
     }
 
     private void addCookie(HttpServletResponse response, String token, SeckillUser user) {
-        //这里的cookie的key都是"token",value是不同的随机值token，所以后面登录的用户会覆盖前面登录的用户的cookie?
+        //这里的cookie的key都是"token",value是不同的随机值token，所以后面登录的用户会覆盖前面登录的用户的cookie
         Cookie cookie = new Cookie(COOKIE_NAME_TOKEN,token);
         cookie.setMaxAge(SeckillUserKey.token.expireSeconds());
         cookie.setPath("/");
@@ -81,6 +91,27 @@ public class SeckillUserServiceImpl implements SeckillUserService {
         String token = UUIDUtil.uuid();
         redisService.set(SeckillUserKey.token,token,user);
         addCookie(response,token,user);
+        return true;
+    }
+
+    public boolean updatePassword(String token,long id,String formPass){
+        //取user
+        SeckillUser user = getById(id);
+        if(user == null){
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        //更新数据库,为啥不直接对取出的user setPassword()?
+        SeckillUser toBeUpdate = new SeckillUser();
+        toBeUpdate.setId(id);
+        toBeUpdate.setPassword(MD5Util.formPassToDBPass(formPass,user.getSalt()));
+        seckillUserDao.update(toBeUpdate);
+
+        //处理缓存，删除redis中(id,user)键值对，修改(token,user)键值对
+        // 为啥不是修改(id,user)键值对，因为直接删除比修改时间更短，等下次访问时再放入redis中即可
+        //那为啥不对(token,user)也直接删除呢？
+        redisService.delete(SeckillUserKey.getById,""+id);
+        user.setPassword(toBeUpdate.getPassword());
+        redisService.set(SeckillUserKey.token,token,user);
         return true;
     }
 
