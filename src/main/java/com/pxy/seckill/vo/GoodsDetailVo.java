@@ -6,7 +6,7 @@ public class GoodsDetailVo {
     private int seckillStatus=0;
     private int remainSeconds=0;
     private GoodsVo goods;
-    private SeckillUser usr;
+    private SeckillUser user;
 
     public int getSeckillStatus() {
         return seckillStatus;
@@ -32,11 +32,11 @@ public class GoodsDetailVo {
         this.goods = goods;
     }
 
-    public SeckillUser getUsr() {
-        return usr;
+    public SeckillUser getUser() {
+        return user;
     }
 
-    public void setUsr(SeckillUser usr) {
-        this.usr = usr;
+    public void setUser(SeckillUser user) {
+        this.user = user;
     }
 }

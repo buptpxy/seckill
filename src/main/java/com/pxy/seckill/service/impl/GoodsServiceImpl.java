@@ -32,7 +32,7 @@ public class GoodsServiceImpl implements GoodsService {
         GoodsVo goods = redisService.get(GoodsKey.getGoodsById,""+goodsId,GoodsVo.class);
         if (goods==null){
             goods=goodsDao.getGoodsVoByGoodsId(goodsId);
-            redisService.set(GoodsKey.getGoodsById,""+goodsId,goods);
+            redisService.set(GoodsKey.getGoodsById,""+goodsId, goods);
         }
         return goods;
     }
