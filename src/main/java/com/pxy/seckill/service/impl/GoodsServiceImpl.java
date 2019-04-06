@@ -37,13 +37,29 @@ public class GoodsServiceImpl implements GoodsService {
         return goods;
     }
 
-    @Override
+//    @Override
     @Transactional
-    public void reduceStock(GoodsVo goods){
+    public void reduceStock0(GoodsVo goods){
 //        SeckillGoods seckillGoods=new SeckillGoods();
 //        seckillGoods.setGoodsId(goods.getId());
         //reduceSeckillStock执行完毕后会改变goods对象的stock吗
         goodsDao.reduceSeckillStock(goods.getId());
         redisService.delete(GoodsKey.getGoodsById,""+goods.getId());
+    }
+
+    @Override
+    public boolean reduceStock(GoodsVo goods){
+//判断数据库减库存是否成功
+        int res=goodsDao.reduceSeckillStock(goods.getId());
+        return res>0;
+    }
+
+    public void resetStock(List<GoodsVo> goodsList){
+        for(GoodsVo goods : goodsList){
+            SeckillGoods g = new SeckillGoods();
+            g.setGoodsId(goods.getId());
+//            g.setStockCount(goods.getStockCount());
+            goodsDao.resetStock(g);
+        }
     }
 }

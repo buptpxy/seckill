@@ -3,10 +3,7 @@ package com.pxy.seckill.dao;
 import com.pxy.seckill.entity.OrderInfo;
 import com.pxy.seckill.entity.SeckillOrders;
 import com.pxy.seckill.entity.SeckillUser;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface OrderDao {
@@ -47,4 +44,16 @@ public interface OrderDao {
      */
     @Select("select * from order_info where id=#{orderId}")
     public OrderInfo getOrderInfoById(long orderId);
+
+    /**
+     * 删除所有订单详情
+     */
+    @Delete("delete from order_info")
+    public void deleteAllOrderInfo();
+
+    /**
+     * 删除所有秒杀订单
+     */
+    @Delete("delete from seckill_orders")
+    public void deleteAllSeckillOrders();
 }

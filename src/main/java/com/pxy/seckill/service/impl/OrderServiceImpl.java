@@ -68,4 +68,9 @@ public class OrderServiceImpl implements OrderService {
         redisService.set(OrderKey.getSeckillOrderByUidGid,""+user.getId()+"_"+goods.getId(),seckillOrder);
         return orderInfo;
     }
+
+    public void deleteOrders(){
+        orderDao.deleteAllSeckillOrders();
+        orderDao.deleteAllOrderInfo();
+    }
 }

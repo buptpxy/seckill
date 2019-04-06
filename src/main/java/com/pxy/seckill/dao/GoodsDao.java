@@ -40,4 +40,11 @@ public interface GoodsDao {
      */
     @Update("update goods set goods_stock = goods_stock - 1 where id=#{goodsId}")
     public int reduceGoodsStock(long goodsId);
+
+    /**
+     * 让商品库存恢复为3
+     * @param g
+     */
+    @Update("update seckill_goods set stock_count = 3 where id=#{goodsId} and stock_count!=3")
+    public void resetStock(SeckillGoods g);
 }

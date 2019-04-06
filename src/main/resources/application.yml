@@ -53,7 +53,45 @@ spring:
     restart:
       enabled: true #是否支持热部署
 
- #redis缓存 ，注意redis的缩进，有缩进代表是二级prefix!
+  #static
+  resources:
+    add-mappings: true #是否开启默认的资源处理，默认为true
+    #cache-period: 3600 #设定资源的缓存时效，以秒为单位.
+    chain:
+      cache: true #是否开启缓存，默认为: true
+      enabled: true #是否开启资源 handling chain，默认为false
+      #gzipped: true
+      html-application-cache: true #是否开启h5应用的cache manifest重写，默认为: false
+    static-locations: classpath:/static/
+  #rabbitmq
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: pxy
+    password: 123456
+    virtual-host: /
+
+    listener:
+      simple:
+        concurrency: 10 #消费者数量
+        max-concurrency: 10 #最大消费者数量
+        #消费者每次从队列获取的消息数量。写多了，如果长时间得不到消费，数据就一直得不到处理
+        prefetch: 1
+        #消费者自动启动
+        auto-startup: true
+        #消费者消费失败，自动重新入队
+        default-requeue-rejected: true
+
+    template:
+      retry:
+        enabled: true #启用发送重试 队列满了发不进去时启动重试
+        initial-interval: 1000 #1秒钟后重试一次
+        max-attempts: 3 #最大重试次数 3次
+        max-interval: 10000 #最大间隔 10秒钟
+        multiplier: 1.0 #等待间隔 的倍数。如果为2  第一次 乘以2 等1秒， 第二次 乘以2 等2秒 ，第三次 乘以2 等4秒
+
+
+#redis缓存 ，注意redis的缩进，有缩进代表是二级prefix!
 redis:
   #redis数据库索引，默认是0
   database: 0

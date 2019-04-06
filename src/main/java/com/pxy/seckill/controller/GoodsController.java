@@ -45,6 +45,13 @@ public class GoodsController {
 //    @Autowired
 //    ApplicationContext applicationContext;
 
+
+    /**
+     * 780QPS 10000 ,2811QPS 15000
+     * @param model
+     * @param token
+     * @return
+     */
     @RequestMapping("/to_list/withoutRedis")
     public String list0(Model model, @CookieValue(value = "token", required = false) String token){
         if(token==null){
@@ -81,6 +88,13 @@ public class GoodsController {
         return html;
     }
 
+    /**
+     * jemeter测压得到结果为CodeMsg.SESSION_ERROR，但是传入的token并未失效
+     * @param model
+     * @param token
+     * @param goodsId
+     * @return
+     */
     @RequestMapping("/to_detail0/{goodsId}")
     @ResponseBody //忘了 @ResponseBody后出现 Error resolving template [goods/to_detail0/2]错误
     public Result<GoodsDetailVo> detail0(Model model, @CookieValue(value = "token", required = false) String token,
@@ -135,7 +149,7 @@ public class GoodsController {
 
         //缓存中没有则手动渲染
         if(token==null){
-            return "login";
+            return "login";//应该返回的是login页面，而不是"login"字符串
         }
         SeckillUser user = redisService.get(SeckillUserKey.token,token,SeckillUser.class);
         if (user==null){
