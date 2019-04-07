@@ -37,12 +37,9 @@ public class SeckillUserServiceImpl implements SeckillUserService {
     public SeckillUser getById(long id){
         //取缓存
         SeckillUser user = redisService.get(SeckillUserKey.getById,""+id,SeckillUser.class);
-        if (user!=null){
-            return user;
-        }
-        //取数据库
-        user = seckillUserDao.getById(id);
-        if (user!=null){
+        if (user==null){
+            //取数据库
+            user = seckillUserDao.getById(id);
             redisService.set(SeckillUserKey.getById,""+id,user);
         }
         return user;
@@ -108,7 +105,7 @@ public class SeckillUserServiceImpl implements SeckillUserService {
 
         //处理缓存，删除redis中(id,user)键值对，修改(token,user)键值对
         // 为啥不是修改(id,user)键值对，因为直接删除比修改时间更短，等下次访问时再放入redis中即可
-        //那为啥不对(token,user)也直接删除呢？
+        //那为啥不对(token,user)也直接删除呢？因为数据库中未存储token，删掉就没有了
         redisService.delete(SeckillUserKey.getById,""+id);
         user.setPassword(toBeUpdate.getPassword());
         redisService.set(SeckillUserKey.token,token,user);

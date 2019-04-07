@@ -17,6 +17,19 @@
     <script type="text/javascript" src="/js/md5.min.js"></script>
     <!-- common.js -->
     <script type="text/javascript" src="/js/common.js"></script>
+    <style type="text/css">
+        html,body{
+            height:100%;
+            width:100%;
+        }
+        <!--body{-->
+            <!--background:url('/img/bg2.jpg') no-repeat;-->
+            <!--background-size:100% 100%;-->
+        <!--}-->
+        #goodslist td{
+            border-top:1px solid #39503f61;
+        }
+    </style>
 </head>
 <body>
 
@@ -48,7 +61,14 @@
                         <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
                         <input type="hidden" name="goodsId"  id="goodsId" />
                     </form>-->
-                <button class="btn btn-primary btn-block" type="button" id="buyButton"onclick="doSeckill()">立即秒杀</button>
+                <!--<button class="btn btn-primary btn-block" type="button" id="buyButton"onclick="doSeckill()">立即秒杀</button>-->
+                <div class="row">
+                    <div class="form-inline">
+                        <!--<img id="verifyCodeImg" width="80" height="32"  style="" onclick="refreshVerifyCode()"/>-->
+                        <!--<input id="verifyCode"  class="form-control" style="" />-->
+                        <button class="btn btn-primary" type="button" id="buyButton"onclick="getSeckillPath()">立即秒杀</button>
+                    </div>
+                </div>
                 <input type="hidden" name="goodsId"  id="goodsId" />
             </td>
         </tr>
@@ -68,8 +88,91 @@
 </div>
 </body>
 <script>
+function refreshVerifyCode(){
+	$("#verifyCodeImg").attr("src", "/seckill/verifyCode?goodsId="+$("#goodsId").val()+"&timestamp="+new Date().getTime());
+}
+function getSeckillPath(){
+	var goodsId = $("#goodsId").val();
+	g_showLoading();
+	$.ajax({
+		url:"/seckill/path",
+		type:"GET",
+		data:{
+		<!--使用data传递的参数可被@RequestParam获取到，而直接加在路径后的参数要使用@PathVariable获取->
+			goodsId:goodsId
+			<!--verifyCode:$("#verifyCode").val()-->
+		},
+		success:function(data){
+			if(data.code == 0){
+				var path = data.data;
+				doSeckill(path);
+			}else{
+				layer.msg(data.msg);
+			}
+		},
+		error:function(){
+			layer.msg("客户端请求有误");
+		}
+	});
+}
+function getSeckillResult(goodsId){
+	g_showLoading();
+	$.ajax({
+		url:"/seckill/result",
+		type:"GET",
+		data:{
+			goodsId:$("#goodsId").val(),
+		},
+		success:function(data){
+			if(data.code == 0){
+				var result = data.data;
+				if(result < 0){
+					layer.msg("对不起，秒杀失败");
+				}else if(result == 0){//继续轮询
+					setTimeout(function(){
+						getSeckillResult(goodsId);
+					}, 200);
+				}else{
+					layer.confirm("恭喜你，秒杀成功！查看订单？", {btn:["确定","取消"]},
+							function(){
+								window.location.href="/order_detail.htm?orderId="+result;
+							},
+							function(){
+								layer.closeAll();
+							});
+				}
+			}else{
+				layer.msg(data.msg);
+			}
+		},
+		error:function(){
+			layer.msg("客户端请求有误");
+		}
+	});
+}
+function doSeckill(path){
+	$.ajax({
+		url:"/seckill/"+path+"/do_seckill",
+		type:"POST",
+		data:{
+			goodsId:$("#goodsId").val()
+		},
+		success:function(data){
+			if(data.code == 0){
+				//window.location.href="/order_detail.htm?orderId="+data.data.id;
+				getSeckillResult($("#goodsId").val());
+			}else{
+				layer.msg(data.msg);
+			}
+		},
+		error:function(){
+			layer.msg("客户端请求有误");
+		}
+	});
 
-function doSeckill(){
+}
+
+function doSeckill0(){
 	$.ajax({
 		url:"/seckill/do_seckill",
 		type:"POST",
@@ -117,7 +220,7 @@ $(function(){
 function getDetail(){
 	var goodsId = g_getQueryString("goodsId");
 	$.ajax({
-		url:"/goods/to_detail0/"+goodsId,
+		url:"/goods/to_detail/"+goodsId,
 		type:"GET",
 		success:function(data){
 			if(data.code == 0){

@@ -41,18 +41,19 @@ public class MQReceiver {
         SeckillMessage seckillMessage = RedisService.stringToObject(message,SeckillMessage.class);
         SeckillUser user = seckillMessage.getUser();
         long goodsId = seckillMessage.getGoodsId();
-
+        //消费者也会先查询stock是否>0
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
-        int stock = goods.getStockCount();
-        if (stock<=0){
-            return;
-        }
-        //判断是否已经秒杀到了
-        SeckillOrders order = orderService.getSeckillOrderByUserIdGoodsId(user.getId(),goodsId);
-        if (order!=null){
-            return;
-        }
+//        int stock = goods.getStockCount();
+//        if (stock<=0){
+//            return;
+//        }
+//        //判断是否已经秒杀过了，避免重复秒杀
+//        SeckillOrders order = orderService.getSeckillOrderByUserIdGoodsId(user.getId(),goodsId);
+//        if (order!=null){
+//            return;
+//        }
         //减库存 下订单 写入秒杀订单
         seckillService.seckill(user,goods);
+        //消费者消费完了之后怎么发出通知？通过查询订单状态
     }
 }

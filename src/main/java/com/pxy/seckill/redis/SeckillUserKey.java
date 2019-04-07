@@ -7,5 +7,6 @@ public class SeckillUserKey extends BasePrefix{
     }
     public static SeckillUserKey token = new SeckillUserKey(TOKEN_EXPIRE,"tk");
     public static SeckillUserKey getById = new SeckillUserKey(0,"id");
-    //为啥要将他的过期时间设置为0，那不就立即过期了吗？缓存不就没用了
+    //为啥要将他的过期时间设置为0，那不就立即过期了吗？缓存不就没用了。
+    //设置为0表示不设置过期时间，即永不过期
 }

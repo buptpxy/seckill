@@ -19,12 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
-    SeckillUserServiceImpl userService;
-
-    @Autowired
-    RedisService redisService;
-
-    @Autowired
     OrderServiceImpl orderService;
 
     @Autowired
@@ -39,15 +33,14 @@ public class OrderController {
      * 查看linux支持的客户端连接端口范围
      * cat /proc/sys/net/ipv4/ip_local_port_range
      * 32768 - 61000, 也就是28232个端口。
-     * @param model
+     *
      * @param
      * @param orderId
      * @return
      */
     @RequestMapping("/detailForJmeterTest")
     @ResponseBody
-    public Result<OrderDetailVo> info(Model model,
-                                      @RequestParam("orderId") long orderId){
+    public Result<OrderDetailVo> info(@RequestParam("orderId") long orderId){
 
         OrderInfo order = orderService.getOrderInfoById(orderId);
         if (order==null){
@@ -61,13 +54,11 @@ public class OrderController {
         return Result.success(orderDetail);
     }
 
+    //orderDetail页面也是静态化缓存在浏览器中的，动态部分由ajax获取
     @RequestMapping("/to_detail/{orderId}")
     @ResponseBody
-    public Result<OrderDetailVo> info1(Model model, SeckillUser user,
-                                       @PathVariable("orderId") long orderId){
-        if(user==null){
-            return Result.error(CodeMsg.SESSION_ERROR);
-        }
+    public Result<OrderDetailVo> info1(@PathVariable("orderId") long orderId){
+
         OrderInfo order = orderService.getOrderInfoById(orderId);
         if (order==null){
             return Result.error(CodeMsg.ORDER_NOT_EXIST);

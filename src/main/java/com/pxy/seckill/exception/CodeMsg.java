@@ -2,6 +2,7 @@ package com.pxy.seckill.exception;
 
 /*各个模块的分类异常*/
 public class CodeMsg {
+
     private int code;
     private String msg;
     private CodeMsg(int code,String msg){
@@ -47,5 +48,7 @@ public class CodeMsg {
     //seckill module 5005xx
     public static CodeMsg SEC_KILL_OVER = new CodeMsg(500500, "商品已经秒杀完毕");
     public static CodeMsg REPEATE_SEC_KILL = new CodeMsg(500501, "不能重复秒杀");
-
+    public static CodeMsg ACCESS_LIMIT_REACHED = new CodeMsg(500502,"点击次数已达上限");
+    public static CodeMsg REQUEST_ILLEGAL = new CodeMsg(500503,"秒杀地址错误");
+    public static CodeMsg SEC_KILL_FAIL=new CodeMsg(500504,"秒杀失败");
 }

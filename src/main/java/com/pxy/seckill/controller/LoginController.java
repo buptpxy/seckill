@@ -23,8 +23,6 @@ public class LoginController {
     private static Logger log = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     SeckillUserServiceImpl userService;
-    @Autowired
-    RedisService redisService;
     @RequestMapping("/to_login")
     public String toLogin(){
         return "login";

@@ -50,10 +50,12 @@ public class RedisService {
             return null;
         }
         Class<?> clazz = value.getClass();
-        if (clazz==int.class || clazz==Integer.class || clazz == long.class || clazz == Long.class){
+        if (clazz==String.class || clazz==int.class || clazz==Integer.class || clazz == long.class || clazz == Long.class){
             return String.valueOf(value);
+        }else {
+            return JSON.toJSONString(value);
         }
-        return JSON.toJSONString(value);
+
     }
     /**
      * 将jedis还给连接池

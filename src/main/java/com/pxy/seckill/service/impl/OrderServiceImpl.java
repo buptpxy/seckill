@@ -24,7 +24,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public SeckillOrders getSeckillOrderByUserIdGoodsId(long userId,long goodsId){
-//        return orderDao.getSeckillOrderByUserIdGoodsId(userId,goodsId);
         SeckillOrders seckillOrder = redisService.get(OrderKey.getSeckillOrderByUidGid,""+userId+"_"+goodsId,SeckillOrders.class);
         if (seckillOrder==null){
             seckillOrder = orderDao.getSeckillOrderByUserIdGoodsId(userId,goodsId);
@@ -34,7 +33,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public OrderInfo getOrderInfoById(long orderId){
-//        return orderDao.getOrderInfoById(orderId);
         OrderInfo orderInfo = redisService.get(OrderKey.getOrderInfoById,""+orderId,OrderInfo.class);
         if (orderInfo==null){
             orderInfo = orderDao.getOrderInfoById(orderId);
@@ -56,15 +54,13 @@ public class OrderServiceImpl implements OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
-        int affectRows = orderDao.insert(orderInfo);
-
+        orderDao.insert(orderInfo);
         long orderId=orderInfo.getId();
         SeckillOrders seckillOrder=new SeckillOrders();
         seckillOrder.setGoodsId(goods.getId());
         seckillOrder.setOrderId(orderId);
         seckillOrder.setUserId(user.getId());
         orderDao.insertSeckillOrder(seckillOrder);
-
         redisService.set(OrderKey.getSeckillOrderByUidGid,""+user.getId()+"_"+goods.getId(),seckillOrder);
         return orderInfo;
     }
